@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To_Do</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+
+
+    <style>
+        *{
+           
+            margin: 0%;
+            padding: 0%;
+            box-sizing: border-box;
+        
+        }
+        body{
+            overflow:hidden;
+            font-family: 'Lobster', cursive;
+            min-height: 100vh;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #32a6ff 0%, #3f6fff 49%, #8d54ff 82%);            /* background-color: #0F0A3C; */
+        }
+        body::before{
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            left: 0;
+            background: linear-gradient(#f3f5f5,#9c27b0);
+
+            box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+            bottom: 0;
+            border-radius: 50%;
+        }
+        
+        body::after{
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            right: 0;
+            box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+            background: linear-gradient(#ff2871,rgba(255,40,113,0.2));
+            top: 0;
+            border-radius: 50%;
+            
+        }
+     
+        .main{
+            z-index: 11;
+            backdrop-filter: blur( 25px );
+            -webkit-backdrop-filter: blur( 25px );
+            background: rgba( 255, 255, 255, 0.25 );
+            box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+            border-radius: 10px;
+            border: 1px solid rgba( 255, 255, 255, 0.18 );
+            width: 400px;
+            height: 600px;
+        }
+        .main h2{
+            font-size: 3rem;
+            text-align: center;
+        }
+
+        .input{
+            display: flex;
+        }
+        .input input:focus{
+            outline: none;
+        }
+        input{
+            display: block;
+            padding: 0.7em 5em;
+            margin-left: auto;
+        }
+        #add{
+            overflow: hidden;
+            position: relative;
+            padding: 0 1em;
+            background: #3f6fff;
+            margin-right: auto;
+        }
+        #add::after{
+            content: "";
+            position: absolute;
+            top:0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);  
+            transition: 0.5s;
+
+        }
+        #add:hover::after{
+            left: 100%;
+        }
+
+
+        ul{
+            height: 84%;  
+            overflow-y: auto;
+            padding: 1.2rem 1rem 1.2rem 1.8rem;
+        }
+        li{
+
+            list-style: none;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items:center;
+          
+        }
+        input[type="checkbox"]{
+            cursor: pointer;
+            opacity: 0;
+            position: absolute;
+        }
+        label{
+            border-radius: 12px;
+            padding: 0.5rem 0;
+            width: 89%;
+            cursor: pointer;
+            display: flex;
+        }
+        label::before{
+            content: "";
+            border-radius: 2px;
+            margin: 0 0.4em;
+            border:0.15em;
+            height: 20px;
+            min-width: 1.4em;
+            border:2px solid #EDEDED;
+        }
+        input[type="checkbox"]:checked + label::before{
+            background-color: rgb(72, 190, 72);
+            content: '\002714';
+            display: flex;
+            color: white;
+            justify-content: center;
+            align-items: center;
+        }
+        input[type="checkbox"]:checked + label{
+            background: rgb(181, 240, 181);
+        }
+        
+        
+      
+        .del{
+            margin-left: 0.5em;
+            font-size: 1.3rem;
+            background: transparent;
+            border:none;
+        }
+        
+        ul::-webkit-scrollbar{
+            background:rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+        }
+       
+        ul::-webkit-scrollbar-thumb{
+            background: #3f6fff;
+            border-radius: 15px;
+        }
+
+
+    </style>
+</head>
+<body>
+   
+    <div class="main">
+        <h2>To Do List</h2>
+        <div class="input">
+            <input id="input" type="text" placeholder="Enter Task">
+            <button id="add" onclick="add()"><i class="fas fa-plus"></i></button>
+        </div>
+        <ul class="list_box">
+            
+        </ul>
+    </div>
+    <script>
+        function* get_id(){
+            let i=1;
+            while(true){
+                yield (i++);
+            }
+        }
+
+        function create_list(text,id){
+            id=String(id);
+            let node=document.createElement("li");
+            node.setAttribute("class","list-item");
+            let s=(`
+            <input id="check-${id}" type="checkbox">
+                <label for="check-${id}">${text}</label>
+                <button class="del" onClick="del(this)" ><i class="fas fa-trash-alt"></i></button>
+            `);
+            node.innerHTML=s;
+            
+            return node;
+        }
+        
+        let id=get_id();
+        function add(){
+            let input=document.getElementById('input');
+            let text=input.value;
+            if(text==""){
+                return;
+            }
+            let target=document.getElementsByClassName("list_box")[0];
+            let listItem=create_list(text,id.next().value);
+            target.appendChild(listItem);
+        }
+
+        function del(x){
+            x.parentElement.remove();
+        }
+        
+
+    </script>
+</body>
+</html>
